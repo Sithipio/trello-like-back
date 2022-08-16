@@ -4,7 +4,7 @@ import { GetTasksFilterDto } from "./dto/get-tasks-filter.dto";
 import { UpdateTaskStatusDto } from "./dto/update-task-status.dto";
 import { Task } from "./task.entity";
 
-@Controller('/tasks')
+@Controller('tasks')
 
 export class TasksController {
   constructor(private tasksService: TasksService) {
