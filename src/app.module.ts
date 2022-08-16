@@ -8,12 +8,12 @@ import { TasksModule } from "./tasks/tasks.module";
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "localhost",
+      type: 'postgres',
+      host: 'localhost',
       port: 5432,
-      username: "postgres",
-      password: "12301",
-      database: "trello-like-back",
+      username: 'postgres',
+      password: '12301',
+      database: 'trello-like-back',
       autoLoadEntities: true,
       synchronize: true,
 

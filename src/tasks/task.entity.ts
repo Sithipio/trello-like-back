@@ -3,7 +3,7 @@ import { TaskStatus } from "./task-status.model";
 
 @Entity()
 export class Task {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   taskId: string;
 
   @Column()
@@ -22,7 +22,7 @@ export class Task {
   taskBackground: string;
 
   @Column({ nullable: true })
-  taskUser: boolean;
+  taskUser: string;
 
   @Column()
   taskStatus: TaskStatus;
