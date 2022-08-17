@@ -23,7 +23,7 @@ export class TasksService {
     }
     if (search) {
       query.andWhere(
-        'LOWER(task.taskName) LIKE LOWER(:search) OR LOWER(task.taskDesc) LIKE LOWER(:search)',
+        '(LOWER(task.taskName) LIKE LOWER(:search) OR LOWER(task.taskDesc) LIKE LOWER(:search))',
         { search: `%${search}%` },
       );
     }
@@ -41,10 +41,11 @@ export class TasksService {
     return found;
   }
 
-  async createTask(name: string): Promise<Task> {
+  async createTask(name: string, user: any): Promise<Task> {
     const task = this.tasksRepository.create({
       taskName: name,
       taskStatus: TaskStatus.ACTIVE,
+      taskUser: user,
     });
 
     await this.tasksRepository.save(task);

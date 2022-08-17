@@ -14,10 +14,10 @@ export class UsersService {
   ) {
   }
 
-  async createUser(authCredentialsDto: AuthCredentialsUpDto): Promise<void> {
+  async createUser(authCredentialsUpDto: AuthCredentialsUpDto): Promise<void> {
     const user = this.usersRepository.create({
-      ...authCredentialsDto,
-      userPassword: await this.hashedPassword(authCredentialsDto.userPassword),
+      ...authCredentialsUpDto,
+      userPassword: await this.hashedPassword(authCredentialsUpDto.userPassword),
     });
     try {
       await this.usersRepository.save(user);
