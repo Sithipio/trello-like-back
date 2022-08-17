@@ -1,4 +1,4 @@
 export enum TaskStatus {
-  ACTIVE = "ACTIVE",
-  ARCHIVE = "ARCHIVE",
+  ACTIVE = 'ACTIVE',
+  ARCHIVE = 'ARCHIVE',
 }

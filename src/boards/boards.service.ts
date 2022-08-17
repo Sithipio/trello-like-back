@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { BoardEntity } from "./board.entity";
+import { BoardEntity } from './board.entity';
+
 @Injectable()
 export class BoardsService {
-  constructor(
-  ) {}
+  constructor() {
+  }
 
   getBoards(boards: any) {
     return this.getBoards(boards);
