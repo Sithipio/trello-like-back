@@ -23,7 +23,7 @@ export class Task {
   @Column({ nullable: true })
   taskBackground: string;
 
-  @ManyToOne((_type) => User, user => user.userTasks, { eager: true })
+  @ManyToOne((_type) => User, user => user.tasks, { eager: true })
   @Exclude({ toPlainOnly: true })
   taskUser: string;
 

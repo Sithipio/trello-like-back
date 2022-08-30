@@ -1,15 +1,20 @@
 import { IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthCredentialsUpDto {
+
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  userEmail: string;
+  email: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @MinLength(4)
-  userPassword: string;
+  password: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
@@ -18,8 +23,9 @@ export class AuthCredentialsUpDto {
     /^[a-zA-Z]{2,20}$/,
     { message: 'The First Name contains non-Latin letters or symbols or space' },
   )
-  userFirstName: string;
+  firstName: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
@@ -28,6 +34,6 @@ export class AuthCredentialsUpDto {
     /^[a-zA-Z]{2,20}$/,
     { message: 'The Last Name contains non-Latin letters or symbols or space' },
   )
-  userLastName: string;
+  lastName: string;
 
 }

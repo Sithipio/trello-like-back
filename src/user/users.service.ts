@@ -17,13 +17,13 @@ export class UsersService {
   async createUser(authCredentialsUpDto: AuthCredentialsUpDto): Promise<void> {
     const user = this.usersRepository.create({
       ...authCredentialsUpDto,
-      userPassword: await this.hashedPassword(authCredentialsUpDto.userPassword),
+      password: await this.hashedPassword(authCredentialsUpDto.password),
     });
     try {
       await this.usersRepository.save(user);
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException('Username already exists');
+        throw new ConflictException('User with that email already exists');
       } else {
         throw new InternalServerErrorException();
       }

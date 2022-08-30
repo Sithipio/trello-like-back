@@ -1,17 +1,24 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BoardBackground } from './board-background.model';
 
-@Entity('boards')
-export class BoardEntity {
+@Entity()
+export class Board {
   @PrimaryGeneratedColumn('uuid')
-  boardId: string;
+  id: string;
 
   @Column()
-  boardName: string;
+  name: string;
 
-  @Column({ nullable: true })
-  boardBackground: string;
+  @Column({
+    type: 'enum',
+    enum: BoardBackground,
+    default: BoardBackground.GREY,
+  })
+  background: BoardBackground;
+
+  @Column({ default: false })
+  isFavorite: boolean;
 
   @Column()
-  boardFavorite: boolean;
-
+  createDate: Date;
 }

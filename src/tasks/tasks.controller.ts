@@ -31,7 +31,7 @@ export class TasksController {
     @Body('taskName') name: string,
     @GetUser() user: User,
   ): Promise<Task> {
-    this.logger.verbose(`User "${user.userEmail}" create a task "${name}"`)
+    this.logger.verbose(`User "${user.email}" create a task "${name}"`)
     return this.tasksService.createTask(name, user);
   }
 
@@ -43,9 +43,9 @@ export class TasksController {
   @Patch('/:taskId/status')
   updateTaskStatus(
     @Param('taskId') id: string,
-    @Body() UpdateTaskStatusDto: UpdateTaskStatusDto,
+    @Body() updateTaskStatusDto: UpdateTaskStatusDto,
   ): Promise<Task> {
-    const { status } = UpdateTaskStatusDto;
+    const { status } = updateTaskStatusDto;
     return this.tasksService.updateTaskStatus(id, status);
   }
 

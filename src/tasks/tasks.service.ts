@@ -41,7 +41,7 @@ export class TasksService {
     const found = await this.tasksRepository.findOneBy({ taskId: id });
 
     if (!found) {
-      throw new NotFoundException((`Task with "${id}" not found`));
+      throw new NotFoundException((`Task with ID: "${id}" not found`));
     }
 
     return found;
@@ -62,7 +62,7 @@ export class TasksService {
     const result = await this.tasksRepository.delete(id);
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Task with "${id}" not found`);
+      throw new NotFoundException(`Task with ID: "${id}" not found`);
     }
   }
 
