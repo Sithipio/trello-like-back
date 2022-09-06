@@ -1,8 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+
 import { BoardBackground } from './board-background.model';
+import { ColumnEntity } from '../column/column.entity';
 
 @Entity()
-export class Board {
+export class BoardEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -21,4 +24,9 @@ export class Board {
 
   @Column()
   createDate: Date;
+
+  @OneToMany(() => ColumnEntity, (column) => column.board)
+  @Exclude({ toPlainOnly: true })
+  @JoinColumn({ name: 'board' })
+  column: ColumnEntity[];
 }

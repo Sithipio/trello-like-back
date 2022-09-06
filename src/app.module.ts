@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { configValidationSchema } from './config.schema';
 import { BoardsModule } from './boards/boards.module';
 import { TasksModule } from './tasks/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/users.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { configValidationSchema } from './config.schema';
+import { ColumnsModule } from './column/columns.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { configValidationSchema } from './config.schema';
     TasksModule,
     AuthModule,
     UsersModule,
+    ColumnsModule,
   ],
 })
 export class AppModule {

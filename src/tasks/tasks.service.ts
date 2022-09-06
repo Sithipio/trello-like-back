@@ -1,23 +1,23 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { TaskStatus } from './task-status.model';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Task } from './task.entity';
 import { Repository } from 'typeorm';
-import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
+import { TaskStatus } from './task-status.model';
+import { TaskEntity } from './task.entity';
+import { IGetTasksFilter } from './interfaces';
 
 @Injectable()
 export class TasksService {
   private logger = new Logger('TasksService', { timestamp: true });
 
   constructor(
-    @InjectRepository(Task)
-    private tasksRepository: Repository<Task>,
+    @InjectRepository(TaskEntity)
+    private tasksRepository: Repository<TaskEntity>,
   ) {
   }
 
-  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
-    const { status, search } = filterDto;
+  async getTasks(filter: IGetTasksFilter): Promise<TaskEntity[]> {
+    const { status, search } = filter;
     const query = this.tasksRepository.createQueryBuilder('task');
 
     if (status) {
@@ -25,6 +25,7 @@ export class TasksService {
     }
     if (search) {
       query.andWhere(
+        //todo ILIKE
         '(LOWER(task.taskName) LIKE LOWER(:search) OR LOWER(task.taskDesc) LIKE LOWER(:search))',
         { search: `%${search}%` },
       );
@@ -32,12 +33,12 @@ export class TasksService {
     try {
       return await query.getMany();
     } catch (error) {
-      this.logger.error(`Failed to get task for user with filter: ${JSON.stringify(filterDto)}`, error.stack);
+      this.logger.error(`Failed to get task for user with filter: ${JSON.stringify(filter)}`, error.stack);
       throw new InternalServerErrorException();
     }
   }
 
-  async getTaskById(id: string): Promise<Task> {
+  async getTaskById(id: string): Promise<TaskEntity> {
     const found = await this.tasksRepository.findOneBy({ taskId: id });
 
     if (!found) {
@@ -47,7 +48,7 @@ export class TasksService {
     return found;
   }
 
-  async createTask(name: string, user: any): Promise<Task> {
+  async createTask(name: string, user: any): Promise<TaskEntity> {
     const task = this.tasksRepository.create({
       taskName: name,
       taskStatus: TaskStatus.ACTIVE,
@@ -66,7 +67,7 @@ export class TasksService {
     }
   }
 
-  async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
+  async updateTaskStatus(id: string, status: TaskStatus): Promise<TaskEntity> {
     const task = await this.getTaskById(id);
     task.taskStatus = status;
 

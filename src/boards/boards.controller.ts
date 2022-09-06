@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
-import { BoardsService } from './boards.service';
-import { Board } from './board.entity';
-import { PostBoardDto } from './dto/create-board.dto';
-import { PatchBoardDto } from './dto/patch-board.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { PutBoardDto } from './dto/put-board.dto';
+
+import { BoardEntity } from './board.entity';
+import { BoardsService } from './boards.service';
+import { PutBoardDto, PostPatchBoardDto } from './dto';
+import { AppRoutes } from '../app-routes';
 
 
-@Controller('boards')
+@Controller(AppRoutes.BOARD)
 @UseGuards(AuthGuard())
 export class BoardsController {
   private logger = new Logger('BoardsController', { timestamp: true });
@@ -16,23 +16,23 @@ export class BoardsController {
   }
 
   @Get()
-  getBoards(): Promise<Board[]> {
+  getBoards(): Promise<BoardEntity[]> {
     this.logger.verbose(`User retrieving all boards`);
     return this.boardsService.getBoards();
   }
 
   @Get('/:id')
-  getBoardsById(@Param('id') id: string): Promise<Board> {
+  getBoardsById(@Param('id') id: string): Promise<BoardEntity> {
     this.logger.verbose(`User retrieving a board with ID: "${id}"`);
     return this.boardsService.getBoardById(id);
   }
 
   @Post()
   createBoard(
-    @Body() postBoardDto: PostBoardDto,
-  ): Promise<Board> {
-    this.logger.verbose(`User create a board "${postBoardDto.name}" with board background "${postBoardDto.background}"`);
-    return this.boardsService.createBoard(postBoardDto);
+    @Body() postPatchBoardDto: PostPatchBoardDto,
+  ): Promise<BoardEntity> {
+    this.logger.verbose(`User create a board "${postPatchBoardDto.name}" with board background "${postPatchBoardDto.background}"`);
+    return this.boardsService.createBoard(postPatchBoardDto);
   }
 
   @Delete('/:id')
@@ -45,7 +45,7 @@ export class BoardsController {
   updateBoardIsFavorite(
     @Param('id') id: string,
     @Body() putBoardDto: PutBoardDto,
-  ): Promise<Board> {
+  ): Promise<BoardEntity> {
     this.logger.verbose(`User toggle a board favorite status with ID:${id} to ${putBoardDto.isFavorite}.`);
     return this.boardsService.updateBoardIsFavorite(id, putBoardDto);
   }
@@ -53,10 +53,10 @@ export class BoardsController {
   @Patch('/:id')
   updateBoard(
     @Param('id') id: string,
-    @Body() patchBoardDto: PatchBoardDto,
-  ): Promise<Board> {
-    this.logger.verbose(`User change a board with ID: "${id}"`);
-    return this.boardsService.updateBoard(id, patchBoardDto);
+    @Body() postPatchBoardDto: PostPatchBoardDto,
+  ): Promise<BoardEntity> {
+    this.logger.verbose(`User update a board with ID: "${id}"`);
+    return this.boardsService.updateBoard(id, postPatchBoardDto);
   }
 
 }

@@ -1,25 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Board } from './board.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostBoardDto } from './dto/create-board.dto';
-import { PatchBoardDto } from './dto/patch-board.dto';
-import { PutBoardDto } from './dto/put-board.dto';
+
+import { BoardEntity } from './board.entity';
+import { IPostPatchBoard, IPutBoard } from './interfaces';
 
 @Injectable()
 export class BoardsService {
 
   constructor(
-    @InjectRepository(Board)
-    private boardsRepository: Repository<Board>,
+    @InjectRepository(BoardEntity)
+    private boardsRepository: Repository<BoardEntity>,
   ) {
   }
 
-  async getBoards(): Promise<Board[]> {
-    return await this.boardsRepository.find({order: {createDate: 'DESC'}});
+  async getBoards(): Promise<BoardEntity[]> {
+    return await this.boardsRepository.find({ order: { createDate: 'DESC' } });
   }
 
-  async getBoardById(id: string): Promise<Board> {
+  async getBoardById(id: string): Promise<BoardEntity> {
     const found = await this.boardsRepository.findOneBy({ id: id });
     if (!found) {
       throw new NotFoundException((`Board with ID: "${id}" not found`));
@@ -28,9 +27,9 @@ export class BoardsService {
     return found;
   }
 
-  async createBoard(postBoardDto: PostBoardDto): Promise<Board> {
+  async createBoard(postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
     const board = this.boardsRepository.create({
-      ...postBoardDto,
+      ...postPatchBoard,
       createDate: new Date(),
     });
 
@@ -45,17 +44,17 @@ export class BoardsService {
     }
   }
 
-  async updateBoardIsFavorite(id: string, putBoardDto: PutBoardDto): Promise<Board> {
+  async updateBoardIsFavorite(id: string, putBoard: IPutBoard): Promise<BoardEntity> {
     let board = await this.getBoardById(id);
-    putBoardDto.isFavorite = !board.isFavorite;
+    putBoard.isFavorite = !board.isFavorite;
 
-    return await this.boardsRepository.save({ ...board, ...putBoardDto });
+    return await this.boardsRepository.save({ ...board, ...putBoard });
   }
 
-  async updateBoard(id: string, patchBoardDto: PatchBoardDto): Promise<Board> {
-    let board = await this.getBoardById(id);
+  async updateBoard(id: string, postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
+    const board = await this.getBoardById(id);
 
-    return await this.boardsRepository.save({ ...board, ...patchBoardDto });
+    return await this.boardsRepository.save({ ...board, ...postPatchBoard });
   }
 
 }

@@ -1,13 +1,14 @@
 import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
-import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
-import { Task } from './task.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from '../auth/get-user.decorator';
-import { User } from '../user/user.entity';
 
-@Controller('tasks')
+import { TasksService } from './tasks.service';
+import { GetTasksFilterDto, UpdateTaskStatusDto } from './dto';
+import { TaskEntity } from './task.entity';
+import { GetUser } from '../auth/get-user.decorator';
+import { UserEntity } from '../user/user.entity';
+import { AppRoutes } from '../app-routes';
+
+@Controller(AppRoutes.TASK)
 @UseGuards(AuthGuard())
 export class TasksController {
   private logger = new Logger('TasksController', { timestamp: true });
@@ -16,35 +17,35 @@ export class TasksController {
   }
 
   @Get()
-  getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]> {
+  getTasks(@Query() filterDto: GetTasksFilterDto): Promise<TaskEntity[]> {
     this.logger.verbose(`User retrieving all task Filters: ${JSON.stringify(filterDto)}`)
     return this.tasksService.getTasks(filterDto);
   }
 
-  @Get('/:taskId')
-  getTaskById(@Param('taskId') id: string): Promise<Task> {
+  @Get('/:id')
+  getTaskById(@Param('id') id: string): Promise<TaskEntity> {
     return this.tasksService.getTaskById(id);
   }
 
   @Post()
   createTask(
-    @Body('taskName') name: string,
-    @GetUser() user: User,
-  ): Promise<Task> {
+    @Body('name') name: string,
+    @GetUser() user: UserEntity,
+  ): Promise<TaskEntity> {
     this.logger.verbose(`User "${user.email}" create a task "${name}"`)
     return this.tasksService.createTask(name, user);
   }
 
-  @Delete('/:taskId')
-  deleteTask(@Param('taskId') id: string): Promise<void> {
+  @Delete('/:id')
+  deleteTask(@Param('id') id: string): Promise<void> {
     return this.tasksService.deleteTask(id);
   }
 
-  @Patch('/:taskId/status')
+  @Patch('/:id/status')
   updateTaskStatus(
-    @Param('taskId') id: string,
+    @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
-  ): Promise<Task> {
+  ): Promise<TaskEntity> {
     const { status } = updateTaskStatusDto;
     return this.tasksService.updateTaskStatus(id, status);
   }

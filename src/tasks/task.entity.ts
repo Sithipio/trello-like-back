@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { TaskStatus } from './task-status.model';
-import { User } from '../user/user.entity';
+import { UserEntity } from '../user/user.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class Task {
+export class TaskEntity {
   @PrimaryGeneratedColumn('uuid')
   taskId: string;
 
@@ -23,7 +23,7 @@ export class Task {
   @Column({ nullable: true })
   taskBackground: string;
 
-  @ManyToOne((_type) => User, user => user.tasks, { eager: true })
+  @ManyToOne((_type) => UserEntity, user => user.tasks, { eager: true })
   @Exclude({ toPlainOnly: true })
   taskUser: string;
 
