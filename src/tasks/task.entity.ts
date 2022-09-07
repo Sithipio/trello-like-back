@@ -1,33 +1,38 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { TaskStatus } from './task-status.model';
-import { UserEntity } from '../user/user.entity';
 import { Exclude } from 'class-transformer';
+
+import { UserEntity } from '../user/user.entity';
+import { TaskBackground, TaskStatus } from './enums';
+import { ColumnEntity } from '../column/column.entity';
 
 @Entity()
 export class TaskEntity {
   @PrimaryGeneratedColumn('uuid')
-  taskId: string;
+  id: string;
 
   @Column()
-  taskName: string;
+  name: string;
 
   @Column({ nullable: true })
-  taskDesc: string;
+  description: string;
 
   @Column({ nullable: true })
-  taskTag: string;
+  tag: string;
 
   @Column({ nullable: true })
-  taskDate: string;
+  date: string;
 
   @Column({ nullable: true })
-  taskBackground: string;
+  background: TaskBackground;
 
-  @ManyToOne((_type) => UserEntity, user => user.tasks, { eager: true })
+  @ManyToOne((_type) => UserEntity, user => user.tasks)
   @Exclude({ toPlainOnly: true })
-  taskUser: string;
+  user: string;
 
   @Column()
-  taskStatus: TaskStatus;
+  status: TaskStatus;
+
+  @ManyToOne(() => ColumnEntity, (column) => column.task, { cascade: true, onDelete: "CASCADE" })
+  column: ColumnEntity;
 
 }

@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, Logger, NotFoundException } f
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { TaskStatus } from './task-status.model';
+import { TaskStatus } from './enums';
 import { TaskEntity } from './task.entity';
 import { IGetTasksFilter } from './interfaces';
 
@@ -14,6 +14,13 @@ export class TasksService {
     @InjectRepository(TaskEntity)
     private tasksRepository: Repository<TaskEntity>,
   ) {
+  }
+
+  async getTasksByColumnId(columnId: string): Promise<TaskEntity[]> {
+    return await this.tasksRepository
+      .createQueryBuilder('task')
+      .where('task.column = :id', { id: columnId })
+      .getMany();
   }
 
   async getTasks(filter: IGetTasksFilter): Promise<TaskEntity[]> {
@@ -39,7 +46,7 @@ export class TasksService {
   }
 
   async getTaskById(id: string): Promise<TaskEntity> {
-    const found = await this.tasksRepository.findOneBy({ taskId: id });
+    const found = await this.tasksRepository.findOneBy({ id: id });
 
     if (!found) {
       throw new NotFoundException((`Task with ID: "${id}" not found`));
@@ -50,9 +57,9 @@ export class TasksService {
 
   async createTask(name: string, user: any): Promise<TaskEntity> {
     const task = this.tasksRepository.create({
-      taskName: name,
-      taskStatus: TaskStatus.ACTIVE,
-      taskUser: user,
+      name: name,
+      status: TaskStatus.ACTIVE,
+      user: user,
     });
 
     await this.tasksRepository.save(task);
@@ -69,7 +76,7 @@ export class TasksService {
 
   async updateTaskStatus(id: string, status: TaskStatus): Promise<TaskEntity> {
     const task = await this.getTaskById(id);
-    task.taskStatus = status;
+    task.status = status;
 
     await this.tasksRepository.save(task);
     return task;

@@ -4,9 +4,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { ColumnsService } from './columns.service';
 import { ColumnEntity } from './column.entity';
 import { PostPatchColumnDto, PutColumnDto } from './dto';
+import { URL_COLUMN } from '../routes.constant';
 
-
-@Controller('column/:id')
+@Controller('/:boardId' + URL_COLUMN)
 @UseGuards(AuthGuard())
 export class ColumnsController {
   private logger = new Logger('ColumnsController', { timestamp: true });
@@ -15,42 +15,42 @@ export class ColumnsController {
   }
 
   @Get()
-  getColumnsByBoardId(@Param('id') id: string): Promise<ColumnEntity[]> {
+  getColumnsByBoardId(@Param('boardId') boardId: string): Promise<ColumnEntity[]> {
     this.logger.verbose(`User retrieving all columns`);
-    return this.columnService.getColumnsByBoardId(id);
+    return this.columnService.getColumnsByBoardId(boardId);
   }
 
   @Post()
   createColumn(
-    @Param('id') id: string,
+    @Param('boardId') boardId: string,
     @Body() postColumnDto: PostPatchColumnDto,
   ): Promise<ColumnEntity> {
     this.logger.verbose(`User create a column "${postColumnDto.name}"`);
-    return this.columnService.createColumn(id, postColumnDto);
+    return this.columnService.createColumn(boardId, postColumnDto);
   }
 
-  @Delete('/:id')
-  deleteColumn(@Param('id') id: string): Promise<void> {
-    this.logger.verbose(`User deleted a column with ID: "${id}"`);
-    return this.columnService.deleteColumn(id);
+  @Delete('/:columnId')
+  deleteColumn(@Param('columnId') columnId: string): Promise<void> {
+    this.logger.verbose(`User deleted a column with ID: "${columnId}"`);
+    return this.columnService.deleteColumn(columnId);
   }
 
-  @Patch('/:id')
+  @Patch('/:columnId')
   updateColumn(
-    @Param('id') id: string,
+    @Param('columnId') columnId: string,
     @Body() postPatchColumnDto: PostPatchColumnDto,
   ): Promise<ColumnEntity> {
-    this.logger.verbose(`User update a column with ID: "${id}"`);
-    return this.columnService.updateColumn(id, postPatchColumnDto);
+    this.logger.verbose(`User update a column with ID: "${columnId}"`);
+    return this.columnService.updateColumn(columnId, postPatchColumnDto);
   }
 
   @Put()
   updateBoardIsFavorite(
-    @Param('id') id: string,
+    @Param('boardId') boardId: string,
     @Body() putColumnDto: PutColumnDto[],
   ): Promise<void> {
-    this.logger.verbose(`User drag adn drop column in board with ID: "${id}`);
-    return this.columnService.updateColumnOrder(id, putColumnDto);
+    this.logger.verbose(`User drag and drop column in board with ID: "${boardId}`);
+    return this.columnService.updateColumnOrder(boardId, putColumnDto);
   }
 
 }

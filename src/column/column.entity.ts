@@ -1,6 +1,8 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { BoardEntity } from '../boards/board.entity';
+import { Exclude } from 'class-transformer';
+import { TaskEntity } from '../tasks/task.entity';
 
 
 @Entity()
@@ -17,4 +19,8 @@ export class ColumnEntity {
   @ManyToOne(() => BoardEntity, (board) => board.column, { cascade: true, onDelete: "CASCADE" })
   board: BoardEntity;
 
+  @OneToMany(() => TaskEntity, (task) => task.column)
+  @Exclude({ toPlainOnly: true })
+  @JoinColumn({ name: 'column' })
+  task: TaskEntity[];
 }

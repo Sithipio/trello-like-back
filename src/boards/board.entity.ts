@@ -29,4 +29,5 @@ export class BoardEntity {
   @Exclude({ toPlainOnly: true })
   @JoinColumn({ name: 'board' })
   column: ColumnEntity[];
+
 }

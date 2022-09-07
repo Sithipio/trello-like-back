@@ -18,10 +18,10 @@ export class BoardsService {
     return await this.boardsRepository.find({ order: { createDate: 'DESC' } });
   }
 
-  async getBoardById(id: string): Promise<BoardEntity> {
-    const found = await this.boardsRepository.findOneBy({ id: id });
+  async getBoardById(boardId: string): Promise<BoardEntity> {
+    const found = await this.boardsRepository.findOneBy({ id: boardId });
     if (!found) {
-      throw new NotFoundException((`Board with ID: "${id}" not found`));
+      throw new NotFoundException((`Board with ID: "${boardId}" not found`));
     }
 
     return found;
@@ -36,23 +36,23 @@ export class BoardsService {
     return await this.boardsRepository.save(board);
   }
 
-  async deleteBoard(id: string): Promise<void> {
-    const result = await this.boardsRepository.delete(id);
+  async deleteBoard(boardId: string): Promise<void> {
+    const result = await this.boardsRepository.delete(boardId);
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Board with ID: "${id}" not found`);
+      throw new NotFoundException(`Board with ID: "${boardId}" not found`);
     }
   }
 
-  async updateBoardIsFavorite(id: string, putBoard: IPutBoard): Promise<BoardEntity> {
-    let board = await this.getBoardById(id);
+  async updateBoardIsFavorite(boardId: string, putBoard: IPutBoard): Promise<BoardEntity> {
+    let board = await this.getBoardById(boardId);
     putBoard.isFavorite = !board.isFavorite;
 
     return await this.boardsRepository.save({ ...board, ...putBoard });
   }
 
-  async updateBoard(id: string, postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
-    const board = await this.getBoardById(id);
+  async updateBoard(boardId: string, postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
+    const board = await this.getBoardById(boardId);
 
     return await this.boardsRepository.save({ ...board, ...postPatchBoard });
   }

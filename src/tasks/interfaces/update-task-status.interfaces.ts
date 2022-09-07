@@ -1,4 +1,4 @@
-import { TaskStatus } from '../task-status.model';
+import { TaskStatus } from '../enums';
 
 export interface IUpdateTaskStatus {
   status: TaskStatus;

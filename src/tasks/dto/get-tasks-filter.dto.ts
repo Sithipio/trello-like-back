@@ -1,4 +1,4 @@
-import { TaskStatus } from '../task-status.model';
+import { TaskStatus } from '../enums';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 

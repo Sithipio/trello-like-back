@@ -6,9 +6,9 @@ import { GetTasksFilterDto, UpdateTaskStatusDto } from './dto';
 import { TaskEntity } from './task.entity';
 import { GetUser } from '../auth/get-user.decorator';
 import { UserEntity } from '../user/user.entity';
-import { AppRoutes } from '../app-routes';
+import { URL_TASK } from '../routes.constant';
 
-@Controller(AppRoutes.TASK)
+@Controller('/:columnId' + URL_TASK)
 @UseGuards(AuthGuard())
 export class TasksController {
   private logger = new Logger('TasksController', { timestamp: true });
@@ -17,14 +17,14 @@ export class TasksController {
   }
 
   @Get()
-  getTasks(@Query() filterDto: GetTasksFilterDto): Promise<TaskEntity[]> {
-    this.logger.verbose(`User retrieving all task Filters: ${JSON.stringify(filterDto)}`)
-    return this.tasksService.getTasks(filterDto);
+  getTaskById(@Param('columnId') columnId: string): Promise<TaskEntity[]> {
+    return this.tasksService.getTasksByColumnId(columnId);
   }
 
   @Get('/:id')
-  getTaskById(@Param('id') id: string): Promise<TaskEntity> {
-    return this.tasksService.getTaskById(id);
+  getTasks(@Query() filterDto: GetTasksFilterDto): Promise<TaskEntity[]> {
+    this.logger.verbose(`User retrieving all task Filters: ${JSON.stringify(filterDto)}`)
+    return this.tasksService.getTasks(filterDto);
   }
 
   @Post()
