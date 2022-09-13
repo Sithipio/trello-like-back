@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { RepositoryDAO } from '../data-sourse';
 import { BoardEntity } from './board.entity';
+import { IPostPatchBoard } from './interfaces';
 
 @Injectable()
 export class BoardRepository extends RepositoryDAO<BoardEntity>{
@@ -16,6 +17,25 @@ export class BoardRepository extends RepositoryDAO<BoardEntity>{
     return await repository.find( { order: { createDate: 'DESC' } });
   }
 
+  async find(): Promise<BoardEntity[]> {
+    console.log('1112');
+    const repository = await this._getRepository(BoardEntity);
+
+    return await repository.find({ order: { createDate: 'DESC' } });
+  }
+
+  async save(postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
+    const repository = await this._getRepository(BoardEntity);
+    const board = repository.create({
+      ...postPatchBoard,
+      createDate: new Date(),
+    });
+    console.log(board);
+
+    await repository.save(board);
+    return board;
+
+  }
   /*  async getBoardById(id: string): Promise<Board> {
       const found = await this.findOneBy({ id: id });
       if (!found) {

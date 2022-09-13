@@ -1,9 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import { UserEntity } from '../user/user.entity';
 import { TaskBackground, TaskStatus } from './enums';
 import { ColumnEntity } from '../column/column.entity';
+import { BoardEntity } from '../boards/board.entity';
 
 @Entity()
 export class TaskEntity {
@@ -32,7 +33,13 @@ export class TaskEntity {
   @Column()
   status: TaskStatus;
 
-  @ManyToOne(() => ColumnEntity, (column) => column.task, { cascade: true, onDelete: "CASCADE" })
-  column: ColumnEntity;
+  @Column()
+  order: number;
 
+  @ManyToOne(() => BoardEntity, (board) => board.task, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
+  board: BoardEntity;
+
+  @ManyToOne(() => ColumnEntity, (column) => column.task, {eager: true, onUpdate: 'CASCADE', onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'column' })
+  column: ColumnEntity;
 }

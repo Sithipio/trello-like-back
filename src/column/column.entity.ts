@@ -16,11 +16,11 @@ export class ColumnEntity {
   @Column()
   order: number;
 
-  @ManyToOne(() => BoardEntity, (board) => board.column, { cascade: true, onDelete: "CASCADE" })
+  @ManyToOne(() => BoardEntity, (board) => board.column, { onDelete: 'CASCADE' })
   board: BoardEntity;
 
-  @OneToMany(() => TaskEntity, (task) => task.column)
+  @OneToMany(() => TaskEntity, (task) => task.column, { onUpdate: 'CASCADE' })
   @Exclude({ toPlainOnly: true })
-  @JoinColumn({ name: 'column' })
+  @JoinColumn({ name: 'columnId' })
   task: TaskEntity[];
 }

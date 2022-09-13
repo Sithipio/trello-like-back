@@ -3,6 +3,7 @@ import { Exclude } from 'class-transformer';
 
 import { BoardBackground } from './board-background.model';
 import { ColumnEntity } from '../column/column.entity';
+import { TaskEntity } from '../tasks/task.entity';
 
 @Entity()
 export class BoardEntity {
@@ -29,5 +30,10 @@ export class BoardEntity {
   @Exclude({ toPlainOnly: true })
   @JoinColumn({ name: 'board' })
   column: ColumnEntity[];
+
+  @OneToMany(() => TaskEntity, (task) => task.board)
+  @Exclude({ toPlainOnly: true })
+  @JoinColumn({ name: 'board' })
+  task: TaskEntity[];
 
 }

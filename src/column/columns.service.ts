@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ColumnEntity } from './column.entity';
 import { IPostPatchColumn } from './interfaces';
-import { IPutColumn } from './interfaces/put-column.interfase';
+import { IPutColumn } from './interfaces';
 
 @Injectable()
 export class ColumnsService {
@@ -49,10 +49,19 @@ export class ColumnsService {
   }
 
   async deleteColumn(columnId: string): Promise<void> {
-    const result = await this.columnRepository.delete(columnId);
+    const found = await this.columnRepository.find({
+      where: { id: columnId },
+      relations: ['task'],
+    });
 
-    if (result.affected === 0) {
-      throw new NotFoundException(`Column with ID: "${columnId}" not found`);
+    if (!found) {
+      throw new NotFoundException((`Column with ID: "${columnId}" not found`));
+    }
+
+    if (found[0].task.length === 0) {
+      await this.columnRepository.delete(columnId);
+    } else {
+      throw new UnprocessableEntityException('The column cannot be deleted because it contains a tasks');
     }
   }
 
@@ -62,11 +71,13 @@ export class ColumnsService {
     return await this.columnRepository.save({ ...column, ...postPatchColumn });
   }
 
-  async updateColumnOrder(boardId: string, putBoard: IPutColumn[]): Promise<void> {
-    putBoard.map((item, i) => {
-        item.order = i;
-        return this.columnRepository.save(item);
-      },
+  async updateColumnOrder(putBoard: IPutColumn[]): Promise<void> {
+    await Promise.all(
+      putBoard.map((item, i) => {
+          item.order = i + 1;
+          return this.columnRepository.save(item);
+        },
+      ),
     );
   }
 }

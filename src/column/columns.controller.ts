@@ -16,7 +16,7 @@ export class ColumnsController {
 
   @Get()
   getColumnsByBoardId(@Param('boardId') boardId: string): Promise<ColumnEntity[]> {
-    this.logger.verbose(`User retrieving all columns`);
+    this.logger.verbose(`User retrieving all columns from board with ID : ${boardId}`);
     return this.columnService.getColumnsByBoardId(boardId);
   }
 
@@ -45,12 +45,12 @@ export class ColumnsController {
   }
 
   @Put()
-  updateBoardIsFavorite(
+  updateColumnOrder(
     @Param('boardId') boardId: string,
     @Body() putColumnDto: PutColumnDto[],
   ): Promise<void> {
     this.logger.verbose(`User drag and drop column in board with ID: "${boardId}`);
-    return this.columnService.updateColumnOrder(boardId, putColumnDto);
+    return this.columnService.updateColumnOrder(putColumnDto);
   }
 
 }
