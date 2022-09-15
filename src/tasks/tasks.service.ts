@@ -37,6 +37,27 @@ export class TasksService {
       .orderBy('task.order', 'ASC')
       .getRawMany();
   }
+
+  async getTasksById(taskId: string): Promise<TaskEntity> {
+    return   await this.tasksRepository
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.column', 'column')
+      .select([
+        'task.id AS id',
+        'task.name AS name',
+        'task.description AS description',
+        'task.background AS background',
+        'task.tag AS tag',
+        'task.date AS date',
+        'task.userId AS user',
+        'task.order AS order',
+        'task.status AS status',
+      ])
+      .addSelect('column.id', 'columnId')
+      .where('task.id = :id', { id: taskId })
+      .getRawOne()
+  }
+
   async createTask(postTask: IPostTask, user: any, boardId, columnId): Promise<TaskEntity> {
     const count = await this.tasksRepository
       .createQueryBuilder('task')

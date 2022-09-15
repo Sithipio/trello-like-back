@@ -17,9 +17,18 @@ export class TasksController {
   }
 
   @Get()
-  getTaskByBoardId(@Param('boardId') boardId: string): Promise<TaskEntity[]> {
+  getTasksByBoardId(@Param('boardId') boardId: string): Promise<TaskEntity[]> {
     this.logger.verbose(`User retrieving all tasks from board with ID : ${boardId}`);
     return this.tasksService.getTasksByBoardId(boardId);
+  }
+
+  @Get('/:taskId')
+  getTaskById(
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+  ): Promise<TaskEntity> {
+    this.logger.verbose(`User retrieving task with ID : ${taskId} from board with ID : ${boardId}`);
+    return this.tasksService.getTasksById(taskId);
   }
 
   @Post('/:columnId')
@@ -29,7 +38,7 @@ export class TasksController {
     @Body() postTaskDto: PostTaskDto,
     @GetUser() user: UserEntity,
   ): Promise<TaskEntity> {
-    this.logger.verbose(`User "${user.email}" create a task "${postTaskDto.name}"`)
+    this.logger.verbose(`User "${user.email}" create a task "${postTaskDto.name}"`);
     return this.tasksService.createTask(postTaskDto, user, boardId, columnId);
   }
 
@@ -48,18 +57,18 @@ export class TasksController {
     return this.tasksService.getTasks(filterDto);
   }*/
 
-/*  @Delete('/:id')
-  deleteTask(@Param('id') id: string): Promise<void> {
-    return this.tasksService.deleteTask(id);
-  }
+  /*  @Delete('/:id')
+    deleteTask(@Param('id') id: string): Promise<void> {
+      return this.tasksService.deleteTask(id);
+    }
 
-  @Patch('/:id/status')
-  updateTaskStatus(
-    @Param('id') id: string,
-    @Body() updateTaskStatusDto: UpdateTaskStatusDto,
-  ): Promise<TaskEntity> {
-    const { status } = updateTaskStatusDto;
-    return this.tasksService.updateTaskStatus(id, status);
-  }*/
+    @Patch('/:id/status')
+    updateTaskStatus(
+      @Param('id') id: string,
+      @Body() updateTaskStatusDto: UpdateTaskStatusDto,
+    ): Promise<TaskEntity> {
+      const { status } = updateTaskStatusDto;
+      return this.tasksService.updateTaskStatus(id, status);
+    }*/
 
 }
