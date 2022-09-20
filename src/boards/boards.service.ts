@@ -10,12 +10,12 @@ export class BoardsService {
 
   constructor(
     @InjectRepository(BoardEntity)
-    private boardsRepository: Repository<BoardEntity>,
+    private boardsRepository: Repository<BoardEntity>
   ) {
   }
 
   async getBoards(): Promise<BoardEntity[]> {
-    return await this.boardsRepository.find({ order: { createDate: 'DESC' } });
+    return await this.boardsRepository.find({ order: { createdDate: 'DESC' } });
   }
 
   async getBoardById(boardId: string): Promise<BoardEntity> {
@@ -30,7 +30,7 @@ export class BoardsService {
   async createBoard(postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
     const board = this.boardsRepository.create({
       ...postPatchBoard,
-      createDate: new Date(),
+      createdDate: new Date(),
     });
 
     return await this.boardsRepository.save(board);

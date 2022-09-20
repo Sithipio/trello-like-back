@@ -14,21 +14,21 @@ export class BoardRepository extends RepositoryDAO<BoardEntity>{
   async getBoards(): Promise<BoardEntity[]> {
     const repository = await this._getRepository(BoardEntity);
     console.log(repository);
-    return await repository.find( { order: { createDate: 'DESC' } });
+    return await repository.find( { order: { createdDate: 'DESC' } });
   }
 
   async find(): Promise<BoardEntity[]> {
     console.log('1112');
     const repository = await this._getRepository(BoardEntity);
 
-    return await repository.find({ order: { createDate: 'DESC' } });
+    return await repository.find({ order: { createdDate: 'DESC' } });
   }
 
   async save(postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
     const repository = await this._getRepository(BoardEntity);
     const board = repository.create({
       ...postPatchBoard,
-      createDate: new Date(),
+      createdDate: new Date(),
     });
     console.log(board);
 
@@ -48,7 +48,7 @@ export class BoardRepository extends RepositoryDAO<BoardEntity>{
     async createBoard(postBoardDto: PostBoardDto): Promise<Board> {
       const board = this.create({
         ...postBoardDto,
-        createDate: new Date(),
+        createdDate: new Date(),
       });
 
       return await this.save(board);

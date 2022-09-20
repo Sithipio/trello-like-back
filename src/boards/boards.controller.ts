@@ -41,15 +41,6 @@ export class BoardsController {
     return this.boardsService.deleteBoard(boardId);
   }
 
-  @Put('/:boardId')
-  updateBoardIsFavorite(
-    @Param('boardId') boardId: string,
-    @Body() putBoardDto: PutBoardDto,
-  ): Promise<BoardEntity> {
-    this.logger.verbose(`User toggle a board favorite status with ID:${boardId} to ${putBoardDto.isFavorite}.`);
-    return this.boardsService.updateBoardIsFavorite(boardId, putBoardDto);
-  }
-
   @Patch('/:boardId')
   updateBoard(
     @Param('boardId') boardId: string,
@@ -57,6 +48,15 @@ export class BoardsController {
   ): Promise<BoardEntity> {
     this.logger.verbose(`User update a board with ID: "${boardId}"`);
     return this.boardsService.updateBoard(boardId, postPatchBoardDto);
+  }
+
+  @Put('/:boardId')
+  updateBoardIsFavorite(
+    @Param('boardId') boardId: string,
+    @Body() putBoardDto: PutBoardDto,
+  ): Promise<BoardEntity> {
+    this.logger.verbose(`User toggle a board favorite status with ID:${boardId} to ${putBoardDto.isFavorite}.`);
+    return this.boardsService.updateBoardIsFavorite(boardId, putBoardDto);
   }
 
 }

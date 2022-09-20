@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Logger, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { TasksService } from './tasks.service';
-import { PostTaskDto, PutTaskDto } from './dto';
+import { PostTaskDto, PutTaskDto, UpdateTaskBackgroundDto, UpdateTaskNameDto } from './dto';
 import { TaskEntity } from './task.entity';
 import { GetUser } from '../auth/get-user.decorator';
 import { UserEntity } from '../user/user.entity';
@@ -28,8 +28,17 @@ export class TasksController {
     @Param('taskId') taskId: string,
   ): Promise<TaskEntity> {
     this.logger.verbose(`User retrieving task with ID : ${taskId} from board with ID : ${boardId}`);
-    return this.tasksService.getTasksById(taskId);
+    return this.tasksService.getTaskById(taskId);
   }
+
+/*  @Get('/:taskId/tags')
+  getTagsById(
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+  ): Promise<TaskEntity[]> {
+    this.logger.verbose(`User retrieving task with ID : ${taskId} from board with ID : ${boardId}`);
+    return this.tasksService.getTagsByTaskID(taskId);
+  }*/
 
   @Post('/:columnId')
   createTask(
@@ -39,7 +48,7 @@ export class TasksController {
     @GetUser() user: UserEntity,
   ): Promise<TaskEntity> {
     this.logger.verbose(`User "${user.email}" create a task "${postTaskDto.name}"`);
-    return this.tasksService.createTask(postTaskDto, user, boardId, columnId);
+    return this.tasksService.createTask(boardId, columnId, user, postTaskDto);
   }
 
   @Put()
@@ -47,8 +56,26 @@ export class TasksController {
     @Param('boardId') boardId: string,
     @Body() putTaskDto: PutTaskDto[],
   ): Promise<void> {
-    this.logger.verbose(`User drag and drop column in board with ID: "${boardId}`);
+    this.logger.verbose(`User drag and drop column in the board with ID: "${boardId}`);
     return this.tasksService.updateTaskOrder(putTaskDto);
+  }
+
+  @Patch('/:taskId/name')
+  updateTaskName(
+    @Param('taskId') taskId: string,
+    @Body() updateTaskNameDto: UpdateTaskNameDto,
+  ): Promise<TaskEntity> {
+    this.logger.verbose(`User update a name of the task with ID: "${taskId}`);
+    return this.tasksService.updateTask(taskId, updateTaskNameDto);
+  }
+
+  @Patch('/:taskId/background')
+  updateTaskBackground(
+    @Param('taskId') taskId: string,
+    @Body() updateTaskBackgroundDto: UpdateTaskBackgroundDto,
+  ): Promise<TaskEntity> {
+    this.logger.verbose(`User update a background of the task with ID: "${taskId}`);
+    return this.tasksService.updateTask(taskId, updateTaskBackgroundDto);
   }
 
   /*@Get('/:id')

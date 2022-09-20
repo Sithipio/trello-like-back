@@ -8,3 +8,4 @@ export const URL_AUTH = `/${AppRoutes.AUTH}`;
 export const URL_BOARD = `/${AppRoutes.BOARD}`;
 export const URL_COLUMN = `/${AppRoutes.COLUMN}`;
 export const URL_TASK = `/${AppRoutes.TASK}`
+export const URL_TAG = `/${AppRoutes.TAG}`

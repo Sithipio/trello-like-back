@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import { BoardBackground } from './board-background.model';
-import { ColumnEntity } from '../column/column.entity';
+import { ColumnEntity } from '../columns/column.entity';
 import { TaskEntity } from '../tasks/task.entity';
+import { TagEntity } from '../tags/tag.entity';
 
 @Entity()
 export class BoardEntity {
@@ -24,16 +25,17 @@ export class BoardEntity {
   isFavorite: boolean;
 
   @Column()
-  createDate: Date;
+  createdDate: Date;
 
   @OneToMany(() => ColumnEntity, (column) => column.board)
   @Exclude({ toPlainOnly: true })
-  @JoinColumn({ name: 'board' })
   column: ColumnEntity[];
 
   @OneToMany(() => TaskEntity, (task) => task.board)
   @Exclude({ toPlainOnly: true })
-  @JoinColumn({ name: 'board' })
   task: TaskEntity[];
 
+  @OneToMany(() => TagEntity, (tag) => tag.board)
+  @Exclude({ toPlainOnly: true })
+  tag: TagEntity[];
 }

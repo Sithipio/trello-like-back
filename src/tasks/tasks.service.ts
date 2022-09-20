@@ -1,15 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { TaskStatus } from './enums';
+import { TaskBackground, TaskStatus } from './enums';
 import { TaskEntity } from './task.entity';
 import { IPostTask, IPutTask } from './interfaces';
 
-
 @Injectable()
 export class TasksService {
-  private logger = new Logger('TasksService', { timestamp: true });
 
   constructor(
     @InjectRepository(TaskEntity)
@@ -26,39 +24,62 @@ export class TasksService {
         'task.name AS name',
         'task.description AS description',
         'task.background AS background',
-        'task.tag AS tag',
         'task.date AS date',
         'task.userId AS user',
         'task.order AS order',
         'task.status AS status',
       ])
-      .addSelect('column.id', 'columnId')
+      .addSelect('column.id', 'column')
       .where('task.board = :id', { id: boardId })
       .orderBy('task.order', 'ASC')
       .getRawMany();
   }
 
-  async getTasksById(taskId: string): Promise<TaskEntity> {
-    return   await this.tasksRepository
-      .createQueryBuilder('task')
-      .leftJoinAndSelect('task.column', 'column')
-      .select([
-        'task.id AS id',
-        'task.name AS name',
-        'task.description AS description',
-        'task.background AS background',
-        'task.tag AS tag',
-        'task.date AS date',
-        'task.userId AS user',
-        'task.order AS order',
-        'task.status AS status',
-      ])
-      .addSelect('column.id', 'columnId')
-      .where('task.id = :id', { id: taskId })
-      .getRawOne()
+/*  async getTasksByBoardId(boardId: string): Promise<TaskEntity[]> {
+   return  await this.tasksRepository.find({
+     relations: ['tag'],
+     where: {
+       board: {
+         id: boardId,
+       }
+     },
+      loadRelationIds:
+        { relations: ['column', 'board']},
+
+    });
+
+  }*/
+
+  /*  async getTaskById(taskId: string): Promise<TaskEntity> {
+      return await this.tasksRepository
+        .createQueryBuilder('task')
+        .leftJoinAndSelect('task.column', 'column')
+        .select([
+          'task.id AS id',
+          'task.name AS name',
+          'task.description AS description',
+          'task.background AS background',
+          'task.date AS date',
+          'task.userId AS user',
+          'task.order AS order',
+          'task.status AS status',
+        ])
+        .addSelect('column.id', 'columnId')
+        .where('task.id = :id', { id: taskId })
+        .getRawOne();
+    }*/
+
+  async getTaskById(taskId: string): Promise<TaskEntity> {
+    const found = await this.tasksRepository.find({
+      where: { id: taskId },
+      relations: ['tag'],
+      loadRelationIds:
+        { relations: ['column']},
+    });
+    return found.find(item => item);
   }
 
-  async createTask(postTask: IPostTask, user: any, boardId, columnId): Promise<TaskEntity> {
+  async createTask(boardId, columnId, user, postTask: IPostTask): Promise<TaskEntity> {
     const count = await this.tasksRepository
       .createQueryBuilder('task')
       .where('task.board = :id', { id: boardId })
@@ -71,6 +92,7 @@ export class TasksService {
       column: columnId,
       status: TaskStatus.ACTIVE,
       order: count.max + 1,
+      background: TaskBackground.EMPTY,
     });
 
     return await this.tasksRepository.save(task);
@@ -95,6 +117,18 @@ export class TasksService {
     );
   }
 
+  async updateTask(taskId: string, newData: {}): Promise<TaskEntity> {
+    const task = await this.getTaskById(taskId);
+
+    return this.tasksRepository.save({ ...task, ...newData });
+  }
+
+/*  async getTagsByTaskID(taskId: string): Promise<TaskEntity[]> {
+    return await this.tasksRepository.createQueryBuilder('task')
+      .leftJoinAndSelect('task.tag', 'tag')
+      .where('task.id = :id', { id: taskId })
+      .getMany();
+  }*/
 
 
   /*async getTasks(filter: IGetTasksFilter): Promise<TaskEntity[]> {
@@ -168,38 +202,38 @@ export class TasksService {
         );
       }*/
 
- /* async getTaskById(id: string): Promise<TaskEntity> {
-    const found = await this.tasksRepository.findOneBy({ id: id });
+  /* async getTaskById(id: string): Promise<TaskEntity> {
+     const found = await this.tasksRepository.findOneBy({ id: id });
 
-    if (!found) {
-      throw new NotFoundException((`Task with ID: "${id}" not found`));
-    }
+     if (!found) {
+       throw new NotFoundException((`Task with ID: "${id}" not found`));
+     }
 
-    return found;
-  }*/
+     return found;
+   }*/
 
-/*  async getTasksById(boardId: string): Promise<TaskEntity[]> {
-    return await this.tasksRepository
-      .createQueryBuilder('task')
-      .leftJoinAndSelect('task.column', 'column')
-      .leftJoinAndSelect('task.board', 'board')
-      .select([
-        'task.id AS id',
-        'task.name AS name',
-        'task.description AS description',
-        'task.background AS background',
-        'task.tag AS tag',
-        'task.date AS date',
-        'task.userId AS user',
-        'task.order AS order',
-        'task.status AS status',
-      ])
-      .addSelect('column.id', 'columnId')
-      .addSelect('board.id', 'boardId')
-      .where('task.board = :id', { id: boardId })
-      .orderBy('task.order', 'DESC')
-      .getRawMany();
-  }*/
+  /*  async getTasksById(boardId: string): Promise<TaskEntity[]> {
+      return await this.tasksRepository
+        .createQueryBuilder('task')
+        .leftJoinAndSelect('task.column', 'column')
+        .leftJoinAndSelect('task.board', 'board')
+        .select([
+          'task.id AS id',
+          'task.name AS name',
+          'task.description AS description',
+          'task.background AS background',
+          'task.tag AS tag',
+          'task.date AS date',
+          'task.userId AS user',
+          'task.order AS order',
+          'task.status AS status',
+        ])
+        .addSelect('column.id', 'columnId')
+        .addSelect('board.id', 'boardId')
+        .where('task.board = :id', { id: boardId })
+        .orderBy('task.order', 'DESC')
+        .getRawMany();
+    }*/
 
   /*  async deleteTask(id: string): Promise<void> {
       const result = await this.tasksRepository.delete(id);
