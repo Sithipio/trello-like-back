@@ -2,7 +2,7 @@ import { Body, Controller, Get, Logger, Param, Patch, Post, Put, UseGuards } fro
 import { AuthGuard } from '@nestjs/passport';
 
 import { TasksService } from './tasks.service';
-import { PostTaskDto, PutTaskDto, UpdateTaskBackgroundDto, UpdateTaskNameDto } from './dto';
+import { PostTaskDto, PutTaskDto, UpdateTaskBackgroundDto, UpdateTaskDescriptionDto, UpdateTaskNameDto } from './dto';
 import { TaskEntity } from './task.entity';
 import { GetUser } from '../auth/get-user.decorator';
 import { UserEntity } from '../user/user.entity';
@@ -76,6 +76,15 @@ export class TasksController {
   ): Promise<TaskEntity> {
     this.logger.verbose(`User update a background of the task with ID: "${taskId}`);
     return this.tasksService.updateTask(taskId, updateTaskBackgroundDto);
+  }
+
+  @Patch('/:taskId/description')
+  updateTaskDescription(
+    @Param('taskId') taskId: string,
+    @Body() updateTaskDescriptionDto: UpdateTaskDescriptionDto,
+  ): Promise<TaskEntity> {
+    this.logger.verbose(`User update a description of the task with ID: "${taskId}`);
+    return this.tasksService.updateTask(taskId, updateTaskDescriptionDto);
   }
 
   /*@Get('/:id')
