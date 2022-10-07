@@ -7,7 +7,8 @@ import { BoardsModule } from './boards/boards.module';
 import { TasksModule } from './tasks/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/users.module';
-import { ColumnsModule } from './column/columns.module';
+import { ColumnsModule } from './columns/columns.module';
+import { TagModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ColumnsModule } from './column/columns.module';
     AuthModule,
     UsersModule,
     ColumnsModule,
+    TagModule,
   ],
 })
 export class AppModule {

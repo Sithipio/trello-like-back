@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { RepositoryDAO } from '../data-sourse';
 import { BoardEntity } from './board.entity';
+import { IPostPatchBoard } from './interfaces';
 
 @Injectable()
 export class BoardRepository extends RepositoryDAO<BoardEntity>{
@@ -13,9 +14,28 @@ export class BoardRepository extends RepositoryDAO<BoardEntity>{
   async getBoards(): Promise<BoardEntity[]> {
     const repository = await this._getRepository(BoardEntity);
     console.log(repository);
-    return await repository.find( { order: { createDate: 'DESC' } });
+    return await repository.find( { order: { createdDate: 'DESC' } });
   }
 
+  async find(): Promise<BoardEntity[]> {
+    console.log('1112');
+    const repository = await this._getRepository(BoardEntity);
+
+    return await repository.find({ order: { createdDate: 'DESC' } });
+  }
+
+  async save(postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
+    const repository = await this._getRepository(BoardEntity);
+    const board = repository.create({
+      ...postPatchBoard,
+      createdDate: new Date(),
+    });
+    console.log(board);
+
+    await repository.save(board);
+    return board;
+
+  }
   /*  async getBoardById(id: string): Promise<Board> {
       const found = await this.findOneBy({ id: id });
       if (!found) {
@@ -28,7 +48,7 @@ export class BoardRepository extends RepositoryDAO<BoardEntity>{
     async createBoard(postBoardDto: PostBoardDto): Promise<Board> {
       const board = this.create({
         ...postBoardDto,
-        createDate: new Date(),
+        createdDate: new Date(),
       });
 
       return await this.save(board);

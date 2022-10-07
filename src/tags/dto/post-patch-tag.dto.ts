@@ -1,8 +1,8 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { BoardBackground } from '../board-background.model';
 import { ApiProperty } from '@nestjs/swagger';
+import { TagBackground } from '../tag-background.model';
 
-export class PostBoardDto {
+export class PostPatchTagDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -10,6 +10,6 @@ export class PostBoardDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsEnum(BoardBackground)
-  background: BoardBackground;
+  @IsEnum(TagBackground)
+  background: TagBackground;
 }

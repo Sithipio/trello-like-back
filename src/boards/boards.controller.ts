@@ -4,10 +4,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { BoardEntity } from './board.entity';
 import { BoardsService } from './boards.service';
 import { PutBoardDto, PostPatchBoardDto } from './dto';
-import { AppRoutes } from '../app-routes';
+import { URL_BOARD } from '../routes.constant';
 
 
-@Controller(AppRoutes.BOARD)
+@Controller(URL_BOARD)
 @UseGuards(AuthGuard())
 export class BoardsController {
   private logger = new Logger('BoardsController', { timestamp: true });
@@ -21,10 +21,10 @@ export class BoardsController {
     return this.boardsService.getBoards();
   }
 
-  @Get('/:id')
-  getBoardsById(@Param('id') id: string): Promise<BoardEntity> {
-    this.logger.verbose(`User retrieving a board with ID: "${id}"`);
-    return this.boardsService.getBoardById(id);
+  @Get('/:boardId')
+  getBoardsById(@Param('boardId') boardId: string): Promise<BoardEntity> {
+    this.logger.verbose(`User retrieving a board with ID: "${boardId}"`);
+    return this.boardsService.getBoardById(boardId);
   }
 
   @Post()
@@ -35,28 +35,28 @@ export class BoardsController {
     return this.boardsService.createBoard(postPatchBoardDto);
   }
 
-  @Delete('/:id')
-  deleteBoard(@Param('id') id: string): Promise<void> {
-    this.logger.verbose(`User deleted a board with ID: "${id}"`);
-    return this.boardsService.deleteBoard(id);
+  @Delete('/:boardId')
+  deleteBoard(@Param('boardId') boardId: string): Promise<void> {
+    this.logger.verbose(`User deleted a board with ID: "${boardId}"`);
+    return this.boardsService.deleteBoard(boardId);
   }
 
-  @Put('/:id')
-  updateBoardIsFavorite(
-    @Param('id') id: string,
-    @Body() putBoardDto: PutBoardDto,
-  ): Promise<BoardEntity> {
-    this.logger.verbose(`User toggle a board favorite status with ID:${id} to ${putBoardDto.isFavorite}.`);
-    return this.boardsService.updateBoardIsFavorite(id, putBoardDto);
-  }
-
-  @Patch('/:id')
+  @Patch('/:boardId')
   updateBoard(
-    @Param('id') id: string,
+    @Param('boardId') boardId: string,
     @Body() postPatchBoardDto: PostPatchBoardDto,
   ): Promise<BoardEntity> {
-    this.logger.verbose(`User update a board with ID: "${id}"`);
-    return this.boardsService.updateBoard(id, postPatchBoardDto);
+    this.logger.verbose(`User update a board with ID: "${boardId}"`);
+    return this.boardsService.updateBoard(boardId, postPatchBoardDto);
+  }
+
+  @Put('/:boardId')
+  updateBoardIsFavorite(
+    @Param('boardId') boardId: string,
+    @Body() putBoardDto: PutBoardDto,
+  ): Promise<BoardEntity> {
+    this.logger.verbose(`User toggle a board favorite status with ID:${boardId} to ${putBoardDto.isFavorite}.`);
+    return this.boardsService.updateBoardIsFavorite(boardId, putBoardDto);
   }
 
 }

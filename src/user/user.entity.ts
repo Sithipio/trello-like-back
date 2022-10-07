@@ -19,6 +19,6 @@ export class UserEntity {
   @Column()
   lastName: string;
 
-  @OneToMany((_type) => TaskEntity, task => task.taskUser, { eager: false })
+  @OneToMany((_type) => TaskEntity, task => task.user, { eager: false })
   tasks: TaskEntity[];
 }

@@ -10,18 +10,18 @@ export class BoardsService {
 
   constructor(
     @InjectRepository(BoardEntity)
-    private boardsRepository: Repository<BoardEntity>,
+    private boardsRepository: Repository<BoardEntity>
   ) {
   }
 
   async getBoards(): Promise<BoardEntity[]> {
-    return await this.boardsRepository.find({ order: { createDate: 'DESC' } });
+    return await this.boardsRepository.find({ order: { createdDate: 'DESC' } });
   }
 
-  async getBoardById(id: string): Promise<BoardEntity> {
-    const found = await this.boardsRepository.findOneBy({ id: id });
+  async getBoardById(boardId: string): Promise<BoardEntity> {
+    const found = await this.boardsRepository.findOneBy({ id: boardId });
     if (!found) {
-      throw new NotFoundException((`Board with ID: "${id}" not found`));
+      throw new NotFoundException((`Board with ID: "${boardId}" not found`));
     }
 
     return found;
@@ -30,29 +30,29 @@ export class BoardsService {
   async createBoard(postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
     const board = this.boardsRepository.create({
       ...postPatchBoard,
-      createDate: new Date(),
+      createdDate: new Date(),
     });
 
     return await this.boardsRepository.save(board);
   }
 
-  async deleteBoard(id: string): Promise<void> {
-    const result = await this.boardsRepository.delete(id);
+  async deleteBoard(boardId: string): Promise<void> {
+    const result = await this.boardsRepository.delete(boardId);
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Board with ID: "${id}" not found`);
+      throw new NotFoundException(`Board with ID: "${boardId}" not found`);
     }
   }
 
-  async updateBoardIsFavorite(id: string, putBoard: IPutBoard): Promise<BoardEntity> {
-    let board = await this.getBoardById(id);
+  async updateBoardIsFavorite(boardId: string, putBoard: IPutBoard): Promise<BoardEntity> {
+    let board = await this.getBoardById(boardId);
     putBoard.isFavorite = !board.isFavorite;
 
     return await this.boardsRepository.save({ ...board, ...putBoard });
   }
 
-  async updateBoard(id: string, postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
-    const board = await this.getBoardById(id);
+  async updateBoard(boardId: string, postPatchBoard: IPostPatchBoard): Promise<BoardEntity> {
+    const board = await this.getBoardById(boardId);
 
     return await this.boardsRepository.save({ ...board, ...postPatchBoard });
   }

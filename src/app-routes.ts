@@ -8,10 +8,10 @@ export enum AppRoutes {
   SIGN_IN = 'sign-in',
   SIGN_UP = 'sign-up',
 
+  //COLUMN pages
+  COLUMN = 'column',
+
   //TASK pages
   TASK = 'task',
-
-  //COLUMN pages
-  COLUMN = 'column'
-
+  TAG = 'tag',
 }
