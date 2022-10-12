@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -15,12 +15,19 @@ export class TagsService {
   ) {
   }
 
-  async getTagsByBoardId(boardId: string): Promise<TagEntity[]> {
+  async getTags(boardId: string): Promise<TagEntity[]> {
     return await this.tagsRepository
       .createQueryBuilder('tag')
       .where('tag.board = :id', { id: boardId })
       .orderBy('tag.createdDate', 'ASC')
       .getMany();
+  }
+
+  async getTag(tagId: string): Promise<TagEntity> {
+    return await this.tagsRepository
+      .createQueryBuilder('tag')
+      .where('tag.id = :tagId', { tagId })
+      .getOne();
   }
 
   async createDefaultTags(boardId: string): Promise<any> {
@@ -49,6 +56,40 @@ export class TagsService {
     });
 
     return await this.tagsRepository.save(tag);
+  }
+
+  async updateTag(tagId: string, newData: {}): Promise<TagEntity> {
+    const tag = await this.getTag(tagId);
+
+    return this.tagsRepository.save({ ...tag, ...newData });
+  }
+
+  async deleteTag(tagId: string): Promise<void> {
+    const found = await this.tagsRepository.find({
+      where: { id: tagId },
+    });
+
+    if (!found) {
+      throw new NotFoundException((`Tag with ID: "${tagId}" not found`));
+    }
+
+    await this.tagsRepository.delete(tagId);
+  }
+
+  async toggleOnTagToTask(tagId: string, taskId: string): Promise<void> {
+    return await this.tagsRepository
+      .createQueryBuilder()
+      .relation(TagEntity, 'task')
+      .of(tagId)
+      .add(taskId);
+  }
+
+  async toggleOffTagToTask(tagId: string, taskId: string): Promise<void> {
+    return await this.tagsRepository
+      .createQueryBuilder()
+      .relation(TagEntity, 'task')
+      .of(tagId)
+      .remove(taskId);
   }
 
 }

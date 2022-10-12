@@ -17,7 +17,7 @@ export class TagEntity {
   @ManyToOne(() => BoardEntity, (board) => board.tag, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   board: BoardEntity;
 
-  @ManyToMany(() => TaskEntity, (task) => task.tag)
+  @ManyToMany(() => TaskEntity, (task) => task.tag, {onDelete: 'CASCADE'})
   task: TaskEntity[];
 
   @Column()

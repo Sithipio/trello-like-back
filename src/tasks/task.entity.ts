@@ -40,7 +40,7 @@ export class TaskEntity {
   @ManyToOne(() => ColumnEntity, (column) => column.task, {onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   column: ColumnEntity;
 
-  @ManyToMany(() => TagEntity, (tag) => tag.task, {eager: true, onUpdate: 'CASCADE', onDelete: 'CASCADE' })
+  @ManyToMany(() => TagEntity, (tag) => tag.task)
   @JoinTable({name: 'task_tag_entity'})
   tag: TagEntity[];
 }

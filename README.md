@@ -30,6 +30,10 @@ ng build
 ```
 The build artifacts will be stored in the dist/ directory.
 
+<h3>Swagger</h3>
+<hr>
+
+Link to [Swagger](http://localhost:3000/swagger/)
 
 <h3>Production server</h3>
 <hr>
