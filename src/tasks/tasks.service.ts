@@ -15,7 +15,7 @@ export class TasksService {
   ) {
   }
 
-  async getTasksByBoardId(boardId: string): Promise<TaskEntity[]> {
+/*  async getTasksByBoardId(boardId: string): Promise<TaskEntity[]> {
     return await this.tasksRepository
       .createQueryBuilder('task')
       .leftJoinAndSelect('task.column', 'column')
@@ -33,9 +33,9 @@ export class TasksService {
       .where('task.board = :id', { id: boardId })
       .orderBy('task.order', 'ASC')
       .getRawMany();
-  }
+  }*/
 
-/*  async getTasksByBoardId(boardId: string): Promise<TaskEntity[]> {
+  async getTasksByBoardId(boardId: string): Promise<TaskEntity[]> {
    return  await this.tasksRepository.find({
      relations: ['tag'],
      where: {
@@ -45,10 +45,9 @@ export class TasksService {
      },
       loadRelationIds:
         { relations: ['column', 'board']},
-
     });
 
-  }*/
+  }
 
   /*  async getTaskById(taskId: string): Promise<TaskEntity> {
       return await this.tasksRepository
