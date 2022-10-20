@@ -19,7 +19,7 @@ export class TaskEntity {
   description: string;
 
   @Column({ nullable: true })
-  date: string;
+  date: Date;
 
   @Column({ default: '' })
   background: TaskBackground;
