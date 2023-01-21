@@ -33,7 +33,7 @@ import { TagModule } from './tags/tags.module';
           port: configService.get('PGPORT'),
           username: configService.get('PGUSER'),
           password: configService.get('PGPASSWORD'),
-          database: configService.get('DATABASE_URL'),
+          database: configService.get('PGDATABASE'),
         };
       },
     }),
