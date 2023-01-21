@@ -1,12 +1,11 @@
 import * as Joi from '@hapi/joi';
 
 export const configValidationSchema = Joi.object({
-  PORT: Joi.number().default(3000),
-  STAGE: Joi.string().required(),
-  DB_HOST: Joi.string().required(),
-  DB_PORT: Joi.number().default(5432).required(),
-  DB_USERNAME: Joi.string().required(),
-  DB_PASSWORD: Joi.string().required(),
-  DB_DATABASE: Joi.string().required(),
+  DATABASE_URL: Joi.string().required(),
+  PGHOST: Joi.string().required(),
+  PGPASSWORD: Joi.string().required(),
+  PGPORT:Joi.number().default(6679).required(),
+  PGUSER:Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
+  DB_ENTITIES: Joi.string()
 });
