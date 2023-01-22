@@ -11,14 +11,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  app.enableCors();
-
-  // app.use((req, res, next) => {
-  //   res.header('Access-Control-Allow-Origin', '*');
-  //   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  //   res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
-  //   next();
-  // });
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    next();
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Trello')
@@ -29,8 +27,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  const port = process.env.PORT;
-  await app.listen(port);
+  const port = process.env.PGPORT;
+  await app.listen(port || 3000);
   logger.log(`Application listening on port ${port}`);
 }
 
