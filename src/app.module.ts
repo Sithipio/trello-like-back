@@ -13,8 +13,9 @@ import { TagModule } from './tags/tags.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [`.env.stage.${process.env.STAGE}`],
-      validationSchema: configValidationSchema,
+      validationSchema: configValidationSchema
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,11 +30,12 @@ import { TagModule } from './tags/tags.module';
           type: 'postgres',
           autoLoadEntities: true,
           synchronize: true,
-          host: configService.get('PGHOST'),
-          port: configService.get('PGPORT'),
-          username: configService.get('PGUSER'),
-          password: configService.get('PGPASSWORD'),
-          database: configService.get('PGDATABASE'),
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_DATABASE'),
+          url: configService.get('DATABASE_URL')
         };
       },
     }),
