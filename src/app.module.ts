@@ -13,8 +13,9 @@ import { TagModule } from './tags/tags.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [`.env.stage.${process.env.STAGE}`],
-      validationSchema: configValidationSchema,
+      validationSchema: configValidationSchema
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -34,6 +35,7 @@ import { TagModule } from './tags/tags.module';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
+          url: configService.get('DATABASE_URL')
         };
       },
     }),
